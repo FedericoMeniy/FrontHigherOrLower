@@ -31,7 +31,7 @@ document.getElementById('form-login').addEventListener('submit', function (event
         .then(({ ok, data }) => {
             if (ok && data.exito) {
                 showMessage("Login exitoso!", true);
-                document.getElementById('botones-secundarios').style.display = 'block';
+                document.getElementById('botones-secundarios').style.display = 'flex';
                 iniciarSesionBtn.style.display = 'none';
                 loginForm.style.display = 'none';
                 menuContainer.style.display = 'flex';
