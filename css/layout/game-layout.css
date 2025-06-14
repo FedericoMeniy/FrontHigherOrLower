@@ -1,0 +1,30 @@
+/* Estilos para el Layout del Juego */
+#juego-container {
+    display: none; /* Manejado por JS */
+}
+
+.game-overlay {
+    background-color: rgba(0, 0, 0, 0.85); /* Fondo oscuro para el juego */
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.jugadores-comparacion {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    color: #333; /* Asegurar que el texto de los jugadores sea legible */
+}
+
+.opciones {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}

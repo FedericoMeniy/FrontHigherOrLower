@@ -1,0 +1,15 @@
+/* Importaciones de Estilos Modulares */
+
+/* Base (estilos fundamentales y de reseteo) */
+@import url('base/reset.css');
+@import url('base/typography.css');
+
+/* Componentes (elementos reutilizables) */
+@import url('components/buttons.css');
+@import url('components/forms.css');
+@import url('components/alerts.css');
+@import url('components/player-card.css');
+
+/* Layout (estructura general de las secciones) */
+@import url('layout/main-layout.css');
+@import url('layout/game-layout.css');

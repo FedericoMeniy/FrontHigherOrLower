@@ -1,0 +1,22 @@
+/* Estilos de Formularios (Login y Registro) */
+.login-box {
+    background-color: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    color: #333; /* Color de texto para los formularios */
+}
+
+.login-box input,
+.login-box select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    box-sizing: border-box; /* Asegurar que padding no aumente el ancho */
+}

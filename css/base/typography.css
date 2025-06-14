@@ -1,0 +1,59 @@
+/* Tipografía y Colores Globales */
+body {
+    font-family: 'Roboto', sans-serif;
+    color: white; /* Color de texto por defecto para el menú principal */
+}
+
+.title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    line-height: 1.1;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+.highlight-green {
+    color: #00e676;
+}
+
+.highlight-red {
+    color: #ff5252;
+}
+
+.highlight-white {
+    color: #ffffff;
+}
+
+.subtitle {
+    font-size: 24px;
+    margin-bottom: 40px;
+}
+
+.puntaje {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333; /* Para el juego, donde el fondo es blanco */
+}
+
+/* Títulos de formularios */
+.login-box h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #1e88e5;
+}
+
+/* Texto informativo y links de formularios */
+.login-box p {
+    margin-top: 15px;
+    color: #666;
+}
+
+.login-box a {
+    color: #1e88e5;
+    text-decoration: none;
+}
+
+.login-box a:hover {
+    text-decoration: underline;
+}

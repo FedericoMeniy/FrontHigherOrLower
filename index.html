@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Higher or Lower Fútbol</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@300;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Menú principal -->
+    <div id="menu-container" class="overlay">
+        <div class="container">
+            <h1 class="title">
+                THE<br>
+                <span class="highlight-green">HIGHER</span> <span class="highlight-white">or</span> <span class="highlight-red">LOWER</span><br>
+                <span class="highlight-white">FÚTBOL</span>
+            </h1>
+
+            <div class="buttons">
+                <a href="#" class="btn" id="iniciar-sesion-btn">🙍‍♂️ Iniciar sesión</a>
+                <div id="botones-secundarios" class="buttons" style="display: none;">
+                    <a href="#" class="btn" onclick="iniciarJuegoClasico()">🎮 Jugar Clásico</a>
+                    <a href="#" class="btn">🏆 Crear Torneo</a>
+                    <a href="#" class="btn">🔗 Unirse a Torneo</a>
+                    <a href="#" class="btn" id="cerrar-sesion-btn">🚪 Cerrar sesion</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login -->
+    <div id="login-form" class="overlay" style="display: none;">
+        <div class="login-box">
+            <h2>Iniciar sesión</h2>
+            <form id="form-login">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Contraseña" required>
+                <button type="submit" class="btn">Iniciar sesión</button>
+            </form>
+            <p>¿No tienes cuenta? <a href="#" id="registro-link">Registrarse</a></p>
+            <button id="volver-menu" class="btn-volver">Volver al menú</button>
+        </div>
+    </div>
+
+    <!-- Registro -->
+    <div id="register-form" class="overlay" style="display: none;">
+        <div class="login-box">
+            <h2>Registrarse</h2>
+            <form id="form-register">
+                <input type="text" id="username" placeholder="Nombre de usuario" required>
+                <input type="email" id="email-register" placeholder="Email" required>
+                <input type="password" id="password-register" placeholder="Contraseña" required>
+                <select id="role" required>
+                    <option value="USER">Usuario</option>
+                    <option value="ADMIN">Administrador</option>
+                </select>
+                <button type="submit" class="btn">Confirmar registro</button>
+            </form>
+            <button id="volver-login" class="btn-volver">Volver al menú</button>
+        </div>
+    </div>
+
+    <!-- Juego -->
+    <div id="juego-container" style="display: none;"></div>
+
+    <!-- Alerta -->
+    <div id="alerta" class="alerta oculto">
+        <span id="alerta-mensaje"></span>
+        <button id="cerrar-alerta">&times;</button>
+    </div>
+
+    <script src="js/juego.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/register.js"></script>
+    <script src="js/utils.js"></script>
+</body>
+</html>
+
+
+
+
+
