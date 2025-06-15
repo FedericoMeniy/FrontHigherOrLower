@@ -29,8 +29,16 @@ formRegister.addEventListener('submit', function (event) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password, tipoRol })
     })
-        .then(res => res.json())
-        .then(data => {
+    .then(res => {
+        if(res.ok){
+            return res.json().catch(() => ({success: true}));
+        }else{
+            return res.json().then(data => {
+                throw new Error(data.mensaje || 'Error en los datos proporcionados');
+            });
+        }
+    })
+    .then(data => {
             if (data.success) {
                 showMessage("Registro exitoso. Iniciá sesión para continuar.", true);
                 formRegister.reset();
@@ -40,5 +48,10 @@ formRegister.addEventListener('submit', function (event) {
                 showMessage(data.mensaje || "Error al registrarse", false);
             }
         })
-        .catch(() => showMessage("No se pudo conectar con el servidor", false));
+        .catch(error => {
+            const message = error.message && error.message !== 'Failed to fetch'
+                ? error.message
+                : "No se pudo conectar con el servidor";
+            showMessage(message, false);
+        });
 });

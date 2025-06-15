@@ -53,7 +53,7 @@ document.getElementById('cerrar-sesion-btn').addEventListener('click', () => {
         if (data.success) {
             showMessage("Sesión cerrada correctamente", true);
             document.getElementById('botones-secundarios').style.display = 'none';
-            iniciarSesionBtn.style.display = 'flex';
+            iniciarSesionBtn.style.display = 'block';
             loginForm.style.display = 'none';
             menuContainer.style.display = 'flex';
         } else {
