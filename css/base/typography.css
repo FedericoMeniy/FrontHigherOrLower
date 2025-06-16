@@ -32,7 +32,7 @@ body {
 .puntaje {
     font-size: 18px;
     font-weight: bold;
-    color: #333; /* Para el juego, donde el fondo es blanco */
+    color: #ffffff; /* Para el juego, donde el fondo es blanco */
 }
 
 /* Títulos de formularios */

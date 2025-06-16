@@ -34,7 +34,7 @@ function iniciarJuegoClasico() {
 async function cargarNuevaRonda() {
     try {
         // Hacemos la llamada al nuevo endpoint del backend
-        const response = await fetch('http://localhost:8080/api/ronda');
+        const response = await fetch('http://localhost:8080/api/juego/ronda');
         if (!response.ok) {
             // Si el backend devuelve un error (ej: 404, 503), lanzamos una excepción
             const errorData = await response.text(); // Intenta leer el cuerpo del error
