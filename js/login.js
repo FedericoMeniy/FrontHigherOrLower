@@ -1,5 +1,4 @@
 // login.js
-const menuContainer = document.getElementById('menu-container');
 const loginForm = document.getElementById('login-form');
 const iniciarSesionBtn = document.getElementById('iniciar-sesion-btn');
 const volverMenuBtn = document.getElementById('volver-menu');
