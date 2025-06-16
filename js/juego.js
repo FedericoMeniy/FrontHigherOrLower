@@ -75,7 +75,7 @@ function mostrarPantallaDeJuego() {
             <div class="jugadores-comparacion">
                 <!-- Jugador 1 (Izquierda) -->
                 <div class="jugador">
-                    <img src="${futbolista1.imagenUrl || 'img/placeholder.jpg'}" alt="${futbolista1.nombre}" onerror="this.onerror=null;this.src='https://placehold.co/150x150/2c3e50/ffffff?text=Jugador';">
+                    <img src="${futbolista1.imagenURL || 'img/placeholder.jpg'}" alt="${futbolista1.nombre}" onerror="this.onerror=null;this.src='https://placehold.co/150x150/2c3e50/ffffff?text=Jugador';">
                     <h2>${futbolista1.nombre}</h2>
                     <p class="estadistica-pregunta">${textoPregunta}</p>
                     <p class="estadistica-valor">${valorF1}</p>
@@ -91,7 +91,7 @@ function mostrarPantallaDeJuego() {
 
                 <!-- Jugador 2 (Derecha) -->
                 <div class="jugador">
-                     <img src="${futbolista2.imagenUrl || 'img/placeholder.jpg'}" alt="${futbolista2.nombre}" onerror="this.onerror=null;this.src='https://placehold.co/150x150/2c3e50/ffffff?text=Jugador';">
+                     <img src="${futbolista2.imagenURL || 'img/placeholder.jpg'}" alt="${futbolista2.nombre}" onerror="this.onerror=null;this.src='https://placehold.co/150x150/2c3e50/ffffff?text=Jugador';">
                     <h2>${futbolista2.nombre}</h2>
                     <p class="estadistica-pregunta">${textoPregunta}</p>
                     <p class="estadistica-valor valor-oculto">?</p>
