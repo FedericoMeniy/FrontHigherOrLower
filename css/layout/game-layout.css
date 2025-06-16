@@ -28,3 +28,10 @@
     align-items: center;
     gap: 10px;
 }
+
+.pregunta-texto {
+    color: #ffc107; /* Amarillo, por ejemplo. Puedes usar el código del color que prefieras */
+    font-weight: bold;
+    font-size: 1.1em; /* Un poco más grande */
+    margin-top: 15px;
+}

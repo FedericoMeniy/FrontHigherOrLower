@@ -82,9 +82,11 @@ function mostrarPantallaDeJuego() {
                 </div>
 
                 <!-- Opciones y Puntaje (Centro) -->
-                <div class="opciones">
+                 <div class="opciones">
                     <p class="puntaje">Puntaje: ${puntaje}</p>
                     <button onclick="jugar('higher')" class="btn-mayor">Higher</button>
+
+                    <button onclick="jugar('equal')" class="btn-igual">Equal</button>
                     <button onclick="jugar('lower')" class="btn-menor">Lower</button>
                     <p class="pregunta-texto">¿${futbolista2.nombre} tiene más o menos?</p>
                 </div>
@@ -114,10 +116,13 @@ function jugar(eleccion) {
     const valorF2 = rondaActual.valorFutbolista2;
 
     let esCorrecto = false;
+    // --- LÓGICA ACTUALIZADA ---
     if (eleccion === 'higher') {
-        esCorrecto = valorF2 >= valorF1; // Se considera correcto si es igual o mayor
-    } else { // 'lower'
-        esCorrecto = valorF2 < valorF1;
+        esCorrecto = valorF2 > valorF1; // Se considera correcto SOLO si es mayor
+    } else if (eleccion === 'lower') {
+        esCorrecto = valorF2 < valorF1; // Se considera correcto si es menor
+    } else if (eleccion === 'equal') {
+        esCorrecto = valorF2 === valorF1; // Se considera correcto si son iguales
     }
 
     // Muestra el valor oculto del segundo jugador

@@ -46,7 +46,10 @@ button {
     background-color: #e74c3c;
     color: white;
 }
-
+.btn-igual {
+    background-color: #3498db; /* Un color azul o el que prefieras */
+    color: white;
+}
 button:hover {
     transform: scale(1.05);
 }
