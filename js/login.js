@@ -47,17 +47,21 @@ document.getElementById('cerrar-sesion-btn').addEventListener('click', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            showMessage("Sesión cerrada correctamente", true);
-            document.getElementById('botones-secundarios').style.display = 'none';
-            iniciarSesionBtn.style.display = 'block';
-            loginForm.style.display = 'none';
-            menuContainer.style.display = 'flex';
-        } else {
-            showMessage("Error al cerrar sesión", false);
+    .then(res => {
+        if (res.ok) {
+            return; 
         }
+        return Promise.reject('Error del servidor al cerrar sesión');
     })
-    .catch(() => showMessage("No se pudo conectar con el servidor", false));
+    .then(() => {
+        showMessage("Sesión cerrada correctamente", true);
+        document.getElementById('botones-secundarios').style.display = 'none';
+        iniciarSesionBtn.style.display = 'block';
+        loginForm.style.display = 'none';
+        menuContainer.style.display = 'flex';
+    })
+    .catch(error => {
+        const message = typeof error === 'string' ? error : "No se pudo conectar con el servidor";
+        showMessage(message, false);
+    });
 });
