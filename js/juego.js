@@ -26,7 +26,7 @@ function iniciarJuegoClasico() {
  */
 async function cargarNuevaRonda() {
     try {
-        const response = await fetchProtegido('http://localhost:8080/api/juego/ronda');
+        const response = await fetch('http://localhost:8080/api/juego/ronda');
         if (!response.ok) {
             const errorData = await response.text();
             throw new Error(`Error del servidor: ${response.status}. ${errorData}`);
