@@ -1,4 +1,5 @@
-// Contenido para js/torneos.js
+// Contenido completo y actualizado para js/torneos.js
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- Elementos del DOM ---
     const menuContainer = document.getElementById('menu-container');
@@ -46,37 +47,60 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FUNCIONES Y MANEJADORES ---
 
     // Carga y muestra la lista de torneos filtrada por tipo.
-    async function cargarTorneosDisponibles(tipoDeTorneo) {
-        listaTorneosDisponibles.innerHTML = '<li>Cargando...</li>';
-        try {
-            // **IMPORTANTE**: El endpoint ahora debe aceptar un filtro, ej: /disponibles?tipo=ADMIN
-            const response = await fetch(`http://localhost:8080/api/torneos/disponibles?tipo=${tipoDeTorneo}`);
-            if (!response.ok) throw new Error('No se pudieron cargar los torneos.');
-            
-            const torneos = await response.json();
-            listaTorneosDisponibles.innerHTML = ''; // Limpiar
+   async function cargarTorneosDisponibles(tipoDeTorneo) {
+    const token = localStorage.getItem('jwt_token');
 
-            if (torneos.length === 0) {
-                 listaTorneosDisponibles.innerHTML = `<li>No hay torneos de tipo '${tipoDeTorneo}' disponibles.</li>`;
-                 return;
-            }
-
-            torneos.forEach(torneo => {
-                const costoTexto = torneo.tipo === 'ADMIN' ? `Costo: ${torneo.costoPuntos} puntos` : 'Requiere contraseña';
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">
-                        <span><strong>${torneo.nombre}</strong> (${costoTexto})</span>
-                        <button class="btn-unirse-ahora" data-id="${torneo.id}" data-tipo="${torneo.tipo}" data-costo="${torneo.costoPuntos}" data-nombre="${torneo.nombre}">Unirse</button>
-                    </div>
-                `;
-                listaTorneosDisponibles.appendChild(li);
-            });
-        } catch (error) {
-            listaTorneosDisponibles.innerHTML = `<li>Error al cargar los torneos.</li>`;
-            showMessage(error.message, false);
-        }
+    // 1. Verificamos si el usuario ha iniciado sesión
+    if (!token) {
+        showMessage("Necesitas iniciar sesión para ver los torneos.", false);
+        // Ocultamos la vista actual y volvemos al menú
+        unirseTorneoContainer.style.display = 'none';
+        menuContainer.style.display = 'flex';
+        return;
     }
+
+    listaTorneosDisponibles.innerHTML = '<li>Cargando...</li>';
+    try {
+        // 2. Añadimos el objeto de configuración a fetch con los headers de autorización
+        const response = await fetch(`http://localhost:8080/api/torneos/disponibles?tipo=${tipoDeTorneo}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        // Manejo de errores específico para 403
+        if (response.status === 403) {
+            throw new Error('Tu sesión ha expirado o es inválida. Por favor, inicia sesión de nuevo.');
+        }
+        if (!response.ok) {
+            throw new Error('No se pudieron cargar los torneos.');
+        }
+        
+        const torneos = await response.json();
+        listaTorneosDisponibles.innerHTML = ''; // Limpiar
+
+        if (torneos.length === 0) {
+             listaTorneosDisponibles.innerHTML = `<li>No hay torneos de tipo '${tipoDeTorneo}' disponibles.</li>`;
+             return;
+        }
+
+        torneos.forEach(torneo => {
+            const costoTexto = torneo.tipo === 'ADMIN' ? `Costo: ${torneo.costoPuntos} puntos` : 'Requiere contraseña';
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">
+                    <span><strong>${torneo.nombre}</strong> (${costoTexto})</span>
+                    <button class="btn-unirse-ahora" data-id="${torneo.id}" data-tipo="${torneo.tipo}" data-costo="${torneo.costoPuntos}" data-nombre="${torneo.nombre}">Unirse</button>
+                </div>
+            `;
+            listaTorneosDisponibles.appendChild(li);
+        });
+    } catch (error) {
+        listaTorneosDisponibles.innerHTML = `<li>Error al cargar: ${error.message}</li>`;
+        showMessage(error.message, false);
+    }
+}
     
     // Maneja el clic en el botón "Unirse" de cada torneo en la lista.
     listaTorneosDisponibles.addEventListener('click', (e) => {
@@ -122,37 +146,86 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const torneoId = e.target.dataset.torneoId;
         const password = document.getElementById('torneo-password-input').value;
+        // Se llama a la función actualizada para unirse a torneos privados
         unirseATorneoPrivado(torneoId, password);
         passwordForm.reset();
         passwordModal.style.display = 'none';
     });
     
-    // Funciones fetch para unirse
+    // --- Funciones fetch para unirse (ACTUALIZADAS) ---
+
+    // Función para unirse a torneos de Admin, AHORA CON AUTENTICACIÓN
     async function unirseATorneoAdmin(torneoId) {
+        const token = localStorage.getItem('jwt_token');
+        if (!token) {
+            showMessage("Debes iniciar sesión para unirte a un torneo.", false);
+            return;
+        }
+
         try {
             const response = await fetch('http://localhost:8080/api/torneos/unirse/admin', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` // **CORRECCIÓN: Header de autorización añadido**
+                },
                 body: JSON.stringify({ torneoId })
             });
-            const resultado = await response.json();
-            if (!response.ok) throw new Error(resultado.mensaje || 'Error');
+
+            if (!response.ok) {
+                const resultado = await response.json();
+                throw new Error(resultado.mensaje || 'Error al unirse al torneo');
+            }
+            
             showMessage('¡Te has unido al torneo!', true);
             cargarTorneosDisponibles('ADMIN');
-        } catch (error) { showMessage(error.message, false); }
+
+        } catch (error) { 
+            showMessage(error.message, false); 
+        }
     }
 
+    /**
+     * Une a un jugador a un torneo privado existente validando la contraseña.
+     * Esta función ha sido actualizada para cumplir con los nuevos requisitos de la API.
+     * @param {string} torneoId - El ID del torneo al que se unirá el jugador.
+     * @param {string} password - La contraseña del torneo introducida por el usuario.
+     */
     async function unirseATorneoPrivado(torneoId, password) {
+        const token = localStorage.getItem('jwt_token');
+        if (!token) {
+            showMessage("Debes iniciar sesión para unirte a un torneo.", false);
+            return;
+        }
+
+        // Endpoint actualizado según los nuevos requisitos
+        const url = `http://localhost:8080/torneo/${torneoId}/unirse`;
+        const requestBody = { password: password };
+
         try {
-            const response = await fetch('http://localhost:8080/api/torneos/unirse/privado', {
+            const response = await fetch(url, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ torneoId, password })
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` // Header de autenticación requerido
+                },
+                body: JSON.stringify(requestBody)
             });
-            const resultado = await response.json();
-            if (!response.ok) throw new Error(resultado.mensaje || 'Error');
-            showMessage('¡Te has unido al torneo!', true);
-            cargarTorneosDisponibles('PRIVADO');
-        } catch (error) { showMessage(error.message, false); }
+
+            if (response.ok) {
+                const torneoActualizado = await response.json();
+                showMessage('¡Te has unido al torneo exitosamente!', true);
+                console.log('Ahora formas parte del torneo:', torneoActualizado);
+                cargarTorneosDisponibles('PRIVADO');
+            } else {
+                // Manejo de errores con mensaje de texto plano, como fue especificado
+                const mensajeError = await response.text();
+                showMessage(`Error: ${mensajeError}`, false);
+                console.error('Error al unirse al torneo:', mensajeError);
+            }
+        } catch (error) {
+            console.error("Error de conexión en unirseATorneoPrivado:", error);
+            showMessage('No se pudo conectar con el servidor.', false);
+        }
     }
 });

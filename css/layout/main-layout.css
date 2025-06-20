@@ -36,3 +36,7 @@ body {
     z-index: 9999;
     display: none; /* Se maneja con JS */
 }
+
+#password-modal {
+    z-index: 10000; /* Un valor muy alto para garantizar que se apile por encima de todo */
+}
