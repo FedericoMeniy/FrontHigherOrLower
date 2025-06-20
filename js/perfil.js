@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/api/perfil', {
+            const response = await fetch('http://localhost:8080/perfil', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`

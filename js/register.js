@@ -33,7 +33,7 @@ formRegister.addEventListener('submit', function (event) {
         if (!res.ok) {
             return res.json().then(errorData => {
                  // Lanzamos un error con el mensaje del backend
-                throw new Error(errorData.message || 'Error en los datos proporcionados');
+                throw new Error(errorData.error || 'Ocurrio un error desconocido.');
             });
         }
         // Si el registro fue exitoso, el cuerpo de la respuesta contiene el token
