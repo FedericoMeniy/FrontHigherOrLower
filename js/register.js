@@ -30,28 +30,34 @@ formRegister.addEventListener('submit', function (event) {
         body: JSON.stringify({ username, email, password, tipoRol })
     })
     .then(res => {
-        if(res.ok){
-            return res.json().catch(() => ({success: true}));
-        }else{
-            return res.json().then(data => {
-                throw new Error(data.mensaje || 'Error en los datos proporcionados');
+        if (!res.ok) {
+            return res.json().then(errorData => {
+                 // Lanzamos un error con el mensaje del backend
+                throw new Error(errorData.message || 'Error en los datos proporcionados');
             });
         }
+        // Si el registro fue exitoso, el cuerpo de la respuesta contiene el token
+        return res.json();
     })
     .then(data => {
-            if (data.success) {
-                showMessage("Registro exitoso. Iniciá sesión para continuar.", true);
-                formRegister.reset();
-                registerForm.style.display = 'none';
-                loginForm.style.display = 'flex';
-            } else {
-                showMessage(data.mensaje || "Error al registrarse", false);
-            }
-        })
-        .catch(error => {
-            const message = error.message && error.message !== 'Failed to fetch'
+        // --- AQUÍ ESTÁ EL CAMBIO PRINCIPAL ---
+        // Guardamos el token para que el usuario inicie sesión automáticamente
+        localStorage.setItem('jwt_token', data.token);
+        
+        // Actualizamos la UI, informando al usuario que ya está conectado
+        showMessage("Registro exitoso! Ya estás conectado.", true);
+        formRegister.reset();
+        
+        // Lógica para mostrar/ocultar botones
+        document.getElementById('botones-secundarios').style.display = 'flex';
+        iniciarSesionBtn.style.display = 'none';
+        registerForm.style.display = 'none';
+        menuContainer.style.display = 'flex';
+    })
+    .catch(error => {
+        const message = error.message && error.message !== 'Failed to fetch'
                 ? error.message
                 : "No se pudo conectar con el servidor";
-            showMessage(message, false);
-        });
+        showMessage(message, false);
+    });
 });
