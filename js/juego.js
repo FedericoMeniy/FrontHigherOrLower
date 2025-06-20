@@ -126,6 +126,9 @@ function jugar(eleccion) {
  * NUEVA FUNCIÓN: Muestra la pantalla de derrota.
  */
 function mostrarPantallaDeDerrota() {
+    
+    guardarPuntaje(puntaje); // ¡Aquí guardamos el puntaje!
+
     juegoContainer.innerHTML = `
         <div class="game-overlay">
             <div class="login-box" style="text-align: center;">
@@ -162,10 +165,44 @@ function formatearPregunta(preguntaEnum) {
         case 'MAS_TARJETAS_ROJAS':
             return 'Tarjetas Rojas';
         case 'MAS_TARJETAS_AMARILLAS':
-            return 'Tarjetas Amarillas';
-        case 'MAS_PARTIDOS_JUGADOS':
-            return 'Partidos Jugados';
+            return 'Tarjetas Amarillas';;
         default:
             return preguntaEnum.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+    }
+}
+
+async function guardarPuntaje(puntos) {
+    // Solo guardar si el puntaje es mayor a 0
+    if (puntos <= 0) return;
+
+    const token = localStorage.getItem('jwt_token');
+    if (!token) {
+        console.error("No se encontró token. El usuario no está autenticado.");
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:8080/api/juego/guardar-puntaje', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ puntos: puntos })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error al guardar el puntaje');
+        }
+
+        const resultado = await response.json();
+        console.log("Puntaje guardado:", resultado);
+        // Opcional: mostrar un mensaje sutil de que los puntos se guardaron.
+        // showMessage(`+${puntos} puntos guardados!`, true);
+
+    } catch (error) {
+        console.error("Error en guardarPuntaje:", error);
+        // No mostramos un error al usuario para no ser intrusivos en la pantalla de derrota.
     }
 }
