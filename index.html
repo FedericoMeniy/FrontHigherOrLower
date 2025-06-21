@@ -105,13 +105,19 @@
     </div>
 
     <div id="unirse-torneo-container" class="overlay" style="display: none;">
-        <div class="login-box">
-            <h2>Unirse a un Torneo</h2>
-            <ul id="lista-torneos-disponibles" style="list-style: none; padding: 0; width: 100%; color: #333;">
-                </ul>
-            <button id="volver-menu-unirse" class="btn-volver">Volver al Menú</button>
-        </div>
+    <div class="login-box">
+        <h2>Unirse a un Torneo</h2>
+
+        <!-- 🔍 Barra de búsqueda por nombre de torneo -->
+        <input type="text" id="searchTorneoInput" placeholder="Buscar torneo por nombre..." 
+               style="width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc;" />
+
+        <ul id="lista-torneos-disponibles" style="list-style: none; padding: 0; width: 100%; color: #333;">
+        </ul>
+
+        <button id="volver-menu-unirse" class="btn-volver">Volver al Menú</button>
     </div>
+</div>
 
   <div id="password-modal" class="overlay" style="display: none;">
      <div class="login-box">

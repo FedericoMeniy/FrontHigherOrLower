@@ -1,5 +1,3 @@
-// Contenido completo y actualizado para js/torneos.js
-
 document.addEventListener('DOMContentLoaded', () => {
     // --- Elementos del DOM ---
     const menuContainer = document.getElementById('menu-container');
@@ -22,85 +20,119 @@ document.addEventListener('DOMContentLoaded', () => {
     const listaTorneosDisponibles = document.getElementById('lista-torneos-disponibles');
     const passwordModalTitle = document.getElementById('password-modal-title');
     
+    // --- NUEVO ELEMENTO DEL DOM: Campo de búsqueda ---
+    const searchTorneoInput = document.getElementById('searchTorneoInput');
+
     // --- FLUJO PRINCIPAL ---
+
+    // Variable para almacenar el tipo de torneo seleccionado (ADMIN o PRIVADO)
+    let tipoTorneoSeleccionado = '';
 
     // 1. Al hacer clic en "Unirse a Torneo", se muestra la pantalla de selección.
     unirseTorneoBtn.addEventListener('click', () => {
         menuContainer.style.display = 'none';
         torneoSelectionContainer.style.display = 'flex';
+        // Limpiar el input de búsqueda cada vez que se vuelve a esta pantalla
+        searchTorneoInput.value = ''; 
     });
 
     // 2. Al seleccionar "Torneo Oficial", se buscan y muestran los torneos de tipo ADMIN.
     selectTorneoOficialBtn.addEventListener('click', () => {
         torneoSelectionContainer.style.display = 'none';
         unirseTorneoContainer.style.display = 'flex';
-        cargarTorneosDisponibles('ADMIN');
+        tipoTorneoSeleccionado = 'ADMIN'; // Establecer el tipo
+        cargarTorneosDisponibles(tipoTorneoSeleccionado); // Cargar sin filtro inicial de búsqueda
     });
 
     // 3. Al seleccionar "Torneo de Amigos", se buscan y muestran los torneos de tipo PRIVADO.
     selectTorneoAmigosBtn.addEventListener('click', () => {
         torneoSelectionContainer.style.display = 'none';
         unirseTorneoContainer.style.display = 'flex';
-        cargarTorneosDisponibles('PRIVADO');
+        tipoTorneoSeleccionado = 'PRIVADO'; // Establecer el tipo
+        cargarTorneosDisponibles(tipoTorneoSeleccionado); // Cargar sin filtro inicial de búsqueda
     });
+
+    // --- NUEVO MANEJADOR DE EVENTOS: Filtrar por nombre ---
+    searchTorneoInput.addEventListener('input', () => {
+        // Cada vez que se escribe, recargar la lista con el término de búsqueda actual
+        if (tipoTorneoSeleccionado) { // Asegurarse de que ya se haya seleccionado un tipo de torneo
+            cargarTorneosDisponibles(tipoTorneoSeleccionado, searchTorneoInput.value.toLowerCase());
+        }
+    });
+
 
     // --- FUNCIONES Y MANEJADORES ---
 
-    // Carga y muestra la lista de torneos filtrada por tipo.
-   async function cargarTorneosDisponibles(tipoDeTorneo) {
-    const token = localStorage.getItem('jwt_token');
+    // Carga y muestra la lista de torneos filtrada por tipo y opcionalmente por nombre.
+   async function cargarTorneosDisponibles(tipoDeTorneo, searchTerm = '') {
+        const token = localStorage.getItem('jwt_token');
 
-    // 1. Verificamos si el usuario ha iniciado sesión
-    if (!token) {
-        showMessage("Necesitas iniciar sesión para ver los torneos.", false);
-        // Ocultamos la vista actual y volvemos al menú
-        unirseTorneoContainer.style.display = 'none';
-        menuContainer.style.display = 'flex';
-        return;
-    }
+        // 1. Verificamos si el usuario ha iniciado sesión
+        if (!token) {
+            showMessage("Necesitas iniciar sesión para ver los torneos.", false);
+            // Ocultamos la vista actual y volvemos al menú
+            unirseTorneoContainer.style.display = 'none';
+            menuContainer.style.display = 'flex';
+            return;
+        }
 
-    listaTorneosDisponibles.innerHTML = '<li>Cargando...</li>';
-    try {
-        // 2. Añadimos el objeto de configuración a fetch con los headers de autorización
-        const response = await fetch(`http://localhost:8080/torneo/disponibles?tipo=${tipoDeTorneo}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
+        listaTorneosDisponibles.innerHTML = '<li>Cargando...</li>';
+        try {
+            // CONSTRUIR LA URL CON EL PARÁMETRO DE BÚSQUEDA
+            let url = `http://localhost:8080/torneo/disponibles?tipo=${tipoDeTorneo}`;
+            if (searchTerm) {
+                url += `&nombre=${encodeURIComponent(searchTerm)}`; // Añadir el término de búsqueda
             }
-        });
 
-        // Manejo de errores específico para 403
-        if (response.status === 403) {
-            throw new Error('Tu sesión ha expirado o es inválida. Por favor, inicia sesión de nuevo.');
-        }
-        if (!response.ok) {
-            throw new Error('No se pudieron cargar los torneos.');
-        }
-        
-        const torneos = await response.json();
-        listaTorneosDisponibles.innerHTML = ''; // Limpiar
+            // 2. Realizamos la solicitud con la URL construida
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
 
-        if (torneos.length === 0) {
-             listaTorneosDisponibles.innerHTML = `<li>No hay torneos de tipo '${tipoDeTorneo}' disponibles.</li>`;
-             return;
-        }
+            // Manejo de errores específico para 403
+            if (response.status === 403) {
+                throw new Error('Tu sesión ha expirado o es inválida. Por favor, inicia sesión de nuevo.');
+            }
+            if (!response.ok) {
+                throw new Error('No se pudieron cargar los torneos.');
+            }
+            
+            let torneos = await response.json();
+            listaTorneosDisponibles.innerHTML = ''; // Limpiar
 
-        torneos.forEach(torneo => {
-            const costoTexto = torneo.tipo === 'ADMIN' ? `Costo: ${torneo.costoPuntos} puntos` : 'Requiere contraseña';
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">
-                    <span><strong>${torneo.nombre}</strong> (${costoTexto})</span>
-                    <button class="btn-unirse-ahora" data-id="${torneo.id}" data-tipo="${torneo.tipo}" data-costo="${torneo.costoPuntos}" data-nombre="${torneo.nombre}">Unirse</button>
-                </div>
-            `;
-            listaTorneosDisponibles.appendChild(li);
-        });
-    } catch (error) {
-        listaTorneosDisponibles.innerHTML = `<li>Error al cargar: ${error.message}</li>`;
-        showMessage(error.message, false);
+            // --- ELIMINAR LÓGICA DE FILTRADO POR NOMBRE EN EL CLIENTE ---
+            // Ya no es necesaria, porque el backend ya devuelve los torneos filtrados.
+            // if (searchTerm) {
+            //     torneos = torneos.filter(torneo => 
+            //         torneo.nombre.toLowerCase().includes(searchTerm)
+            //     );
+            // }
+            // --- FIN LÓGICA DE FILTRADO ELIMINADA ---
+
+            if (torneos.length === 0) {
+                listaTorneosDisponibles.innerHTML = `<li>No hay torneos de tipo '${tipoDeTorneo}' ${searchTerm ? `que coincidan con '${searchTerm}'` : ''} disponibles.</li>`;
+                return;
+            }
+
+            torneos.forEach(torneo => {
+                const costoTexto = torneo.tipo === 'ADMIN' ? `Costo: ${torneo.costoPuntos} puntos` : 'Requiere contraseña';
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">
+                        <span><strong>${torneo.nombre}</strong> (${costoTexto})</span>
+                        <button class="btn-unirse-ahora" data-id="${torneo.id}" data-tipo="${torneo.tipo}" data-costo="${torneo.costoPuntos}" data-nombre="${torneo.nombre}">Unirse</button>
+                    </div>
+                `;
+                listaTorneosDisponibles.appendChild(li);
+            });
+        } catch (error) {
+            listaTorneosDisponibles.innerHTML = `<li>Error al cargar: ${error.message}</li>`;
+            showMessage(error.message, false);
+        }
     }
-}
     
     // Maneja el clic en el botón "Unirse" de cada torneo en la lista.
     listaTorneosDisponibles.addEventListener('click', (e) => {
@@ -178,7 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             showMessage('¡Te has unido al torneo!', true);
-            cargarTorneosDisponibles('ADMIN');
+            // Recargar torneos del tipo actual para reflejar el cambio
+            cargarTorneosDisponibles(tipoTorneoSeleccionado, searchTorneoInput.value.toLowerCase()); 
 
         } catch (error) { 
             showMessage(error.message, false); 
@@ -227,7 +260,8 @@ async function unirseATorneoPrivado(torneoId, password) {
         if (response.ok) {
             const torneoActualizado = await response.json();
             showMessage('¡Te has unido al torneo exitosamente!', true);
-            cargarTorneosDisponibles('PRIVADO');
+            // Recargar torneos del tipo actual para reflejar el cambio
+            cargarTorneosDisponibles(tipoTorneoSeleccionado, searchTorneoInput.value.toLowerCase());
         } else {
             const mensajeError = await response.text();
             showMessage(`Error: ${mensajeError}`, false);
