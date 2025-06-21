@@ -7,6 +7,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     crearTorneoBtn.addEventListener('click', (e) => {
         e.preventDefault();
+
+        const titulo = crearTorneoContainer.querySelector('h2');
+        const passwordInput = document.getElementById('torneo-nueva-password');
+        const premioInput = document.getElementById('torneo-premio');
+        const costoInput = document.getElementById('torneo-costo-entrada');
+        const userRole = localStorage.getItem('userRole');
+
+        if (userRole === 'ADMIN') {
+            titulo.textContent = 'CREAR TORNEO OFICIAL';
+            passwordInput.style.display = 'none';
+            passwordInput.required = false;
+            premioInput.style.display = 'block';
+            premioInput.required = true;
+            costoInput.style.display = 'block';
+            costoInput.required = true;
+        } else {
+            titulo.textContent = 'Crear Torneo de Amigos';
+            passwordInput.style.display = 'block';
+            passwordInput.required = true;
+            premioInput.style.display = 'none';
+            premioInput.required = false;
+            costoInput.style.display = 'none';
+            costoInput.required = false;
+        }
+
         menuContainer.style.display = 'none';
         crearTorneoContainer.style.display = 'flex';
     });
@@ -16,53 +41,66 @@ document.addEventListener('DOMContentLoaded', () => {
         menuContainer.style.display = 'flex';
     });
 
+    // --- LÓGICA DE ENVÍO (SUBMIT) ACTUALIZADA ---
     formCrearTorneo.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        // --- 1. RECUPERAR EL TOKEN DEL LOCALSTORAGE ---
         const token = localStorage.getItem('jwt_token');
-
-        // Si no hay token, el usuario no ha iniciado sesión.
         if (!token) {
             showMessage("Debes iniciar sesión para poder crear un torneo.", false);
-            // Opcional: redirigir al login
-            // window.location.href = '/login.html';
             return;
         }
 
+        const userRole = localStorage.getItem('userRole');
         const nombre = document.getElementById('torneo-nombre').value;
-        const password = document.getElementById('torneo-nueva-password').value;
         const duracion = document.getElementById('torneo-duracion').value;
 
-        if (!nombre.trim() || !password.trim()) {
-            showMessage("El nombre y la contraseña no pueden estar vacíos.", false);
-            return;
-        }
+        let url = '';
+        let datosTorneo = {};
 
-        const datosTorneo = {
-            nombreTorneo: nombre,
-            password: password,
-            tiempoLimite: duracion
-        };
+        if (userRole === 'ADMIN') {
+            const premio = document.getElementById('torneo-premio').value;
+            const costoEntrada = document.getElementById('torneo-costo-entrada').value;
+
+            if (parseInt(premio) < 0 || parseInt(costoEntrada) < 0) {
+                showMessage("El premio y el costo no pueden ser negativos.", false);
+                return;
+            }
+
+            url = 'http://localhost:8080/torneo/crear-oficial';
+            datosTorneo = {
+                nombre: nombre,
+                tiempoLimite: duracion,
+                premio: parseInt(premio),
+                costoEntrada: parseInt(costoEntrada)
+            };
+        } else {
+            const password = document.getElementById('torneo-nueva-password').value;
+            if (!nombre.trim() || !password.trim()) {
+                showMessage("El nombre y la contraseña no pueden estar vacíos.", false);
+                return;
+            }
+            url = 'http://localhost:8080/torneo/crear-amigos';
+            datosTorneo = {
+                nombreTorneo: nombre,
+                password: password,
+                tiempoLimite: duracion
+            };
+        }
         
         try {
-            const response = await fetch('http://localhost:8080/torneo/crear-amigos', {
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    // --- 2. AÑADIR LA CABECERA DE AUTORIZACIÓN CON EL TOKEN ---
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(datosTorneo)
-                // --- 3. QUITAR 'credentials: include' ---
             });
 
             if (!response.ok) {
-                // Si el token es inválido o expiró, el servidor devolverá un 403 Forbidden.
-                if (response.status === 403) {
-                     throw new Error('Tu sesión ha expirado o es inválida. Por favor, inicia sesión de nuevo.');
-                }
-                const errorTexto = await response.text();
+                // Aquí se recibe el "Usuario creador no encontrado"
+                const errorTexto = await response.text(); 
                 throw new Error('Error del servidor: ' + errorTexto);
             }
 

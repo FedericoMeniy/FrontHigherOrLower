@@ -26,7 +26,6 @@ document.getElementById('form-login').addEventListener('submit', function (event
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
-        // Ya no necesitamos 'credentials: include'
     })
     .then(res => {
         // Si la respuesta no es "ok", leemos el JSON del error para un mensaje más claro
@@ -42,6 +41,7 @@ document.getElementById('form-login').addEventListener('submit', function (event
         // --- AQUÍ ESTÁ EL CAMBIO PRINCIPAL ---
         // Guardamos el token en el localStorage del navegador
         localStorage.setItem('jwt_token', data.token);
+        localStorage.setItem('userRole', data.tipoRol);
 
         // El resto es tu lógica para la UI
         showMessage("Login exitoso!", true);
@@ -49,6 +49,15 @@ document.getElementById('form-login').addEventListener('submit', function (event
         iniciarSesionBtn.style.display = 'none';
         loginForm.style.display = 'none';
         menuContainer.style.display = 'flex';
+
+        const unirseTorneoBtn = document.getElementById('unirse-torneo-btn');
+        if (unirseTorneoBtn) { // Primero, nos aseguramos de que el botón exista
+            if (data.tipoRol === 'ADMIN') {
+                unirseTorneoBtn.style.display = 'none';
+            } else {
+                unirseTorneoBtn.style.display = 'block';
+            }
+        }
     })
     .catch((error) => {
         showMessage(error.message, false);
@@ -59,6 +68,7 @@ document.getElementById('form-login').addEventListener('submit', function (event
 document.getElementById('cerrar-sesion-btn').addEventListener('click', () => {
     // 1. Borramos el token del localStorage
     localStorage.removeItem('jwt_token');
+    localStorage.removeItem('userRole');
 
     // 2. Actualizamos la interfaz de usuario
     showMessage("Sesión cerrada correctamente", true);
@@ -66,4 +76,9 @@ document.getElementById('cerrar-sesion-btn').addEventListener('click', () => {
     iniciarSesionBtn.style.display = 'block'; // Usamos block para que vuelva a ser visible
     loginForm.style.display = 'none';
     menuContainer.style.display = 'flex';
+
+    const unirseTorneoBtn = document.getElementById('unirse-torneo-btn');
+    if (unirseTorneoBtn) { // Nos aseguramos de que el botón exista antes de modificarlo
+        unirseTorneoBtn.style.display = 'block';
+    }
 });

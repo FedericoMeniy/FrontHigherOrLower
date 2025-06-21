@@ -42,6 +42,7 @@ formRegister.addEventListener('submit', function (event) {
         // --- AQUÍ ESTÁ EL CAMBIO PRINCIPAL ---
         // Guardamos el token para que el usuario inicie sesión automáticamente
         localStorage.setItem('jwt_token', data.token);
+        localStorage.setItem('userRole', data.tipoRol);
         
         // Actualizamos la UI, informando al usuario que ya está conectado
         showMessage("Registro exitoso! Ya estás conectado.", true);
@@ -52,6 +53,15 @@ formRegister.addEventListener('submit', function (event) {
         iniciarSesionBtn.style.display = 'none';
         registerForm.style.display = 'none';
         menuContainer.style.display = 'flex';
+
+        const unirseTorneoBtn = document.getElementById('unirse-torneo-btn');
+        if (unirseTorneoBtn) { // Primero, nos aseguramos de que el botón exista
+            if (data.tipoRol === 'ADMIN') {
+                unirseTorneoBtn.style.display = 'none';
+            } else {
+                unirseTorneoBtn.style.display = 'block';
+            }
+        }
     })
     .catch(error => {
         const message = error.message && error.message !== 'Failed to fetch'
