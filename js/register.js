@@ -22,12 +22,11 @@ formRegister.addEventListener('submit', function (event) {
     const username = document.getElementById('username').value;
     const email = document.getElementById('email-register').value;
     const password = document.getElementById('password-register').value;
-    const tipoRol = document.getElementById('role').value;
 
     fetch('http://localhost:8080/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password, tipoRol })
+        body: JSON.stringify({ username, email, password})
     })
     .then(res => {
         if (!res.ok) {

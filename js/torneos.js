@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     listaTorneosDisponibles.innerHTML = '<li>Cargando...</li>';
     try {
         // 2. Añadimos el objeto de configuración a fetch con los headers de autorización
-        const response = await fetch(`http://localhost:8080/api/torneos/disponibles?tipo=${tipoDeTorneo}`, {
+        const response = await fetch(`http://localhost:8080/torneo/disponibles?tipo=${tipoDeTorneo}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/api/torneos/unirse/admin', {
+            const response = await fetch(`http://localhost:8080/torneo/${torneoId}/unirse-oficial`, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',

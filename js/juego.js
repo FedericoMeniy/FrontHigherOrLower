@@ -26,7 +26,7 @@ function iniciarJuegoClasico() {
  */
 async function cargarNuevaRonda() {
     try {
-        const response = await fetch('http://localhost:8080/api/juego/ronda');
+        const response = await fetch('http://localhost:8080/juego/ronda');
         if (!response.ok) {
             const errorData = await response.text();
             throw new Error(`Error del servidor: ${response.status}. ${errorData}`);
@@ -69,7 +69,7 @@ function mostrarPantallaDeJuego() {
                     <button onclick="jugar('higher')" class="btn-mayor">Higher</button>
                     <button onclick="jugar('equal')" class="btn-igual">Equal</button>
                     <button onclick="jugar('lower')" class="btn-menor">Lower</button>
-                    <p class="pregunta-texto">¿${futbolista2.nombre} tiene más o menos?</p>
+                    <p class="pregunta-texto">¿${futbolista2.nombre} tiene más, menos o igual?</p>
                 </div>
 
                 <div class="jugador">
@@ -182,7 +182,7 @@ async function guardarPuntaje(puntos) {
     }
 
     try {
-        const response = await fetch('http://localhost:8080/api/juego/guardar-puntaje', {
+        const response = await fetch('http://localhost:8080/juego/guardar-puntaje', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
