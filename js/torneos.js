@@ -191,41 +191,50 @@ document.addEventListener('DOMContentLoaded', () => {
      * @param {string} torneoId - El ID del torneo al que se unirá el jugador.
      * @param {string} password - La contraseña del torneo introducida por el usuario.
      */
-    async function unirseATorneoPrivado(torneoId, password) {
-        const token = localStorage.getItem('jwt_token');
-        if (!token) {
-            showMessage("Debes iniciar sesión para unirte a un torneo.", false);
-            return;
-        }
+   // js/torneos.js
 
-        // Endpoint actualizado según los nuevos requisitos
-        const url = `http://localhost:8080/torneo/${torneoId}/unirse`;
-        const requestBody = { password: password };
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` // Header de autenticación requerido
-                },
-                body: JSON.stringify(requestBody)
-            });
-
-            if (response.ok) {
-                const torneoActualizado = await response.json();
-                showMessage('¡Te has unido al torneo exitosamente!', true);
-                console.log('Ahora formas parte del torneo:', torneoActualizado);
-                cargarTorneosDisponibles('PRIVADO');
-            } else {
-                // Manejo de errores con mensaje de texto plano, como fue especificado
-                const mensajeError = await response.text();
-                showMessage(`Error: ${mensajeError}`, false);
-                console.error('Error al unirse al torneo:', mensajeError);
-            }
-        } catch (error) {
-            console.error("Error de conexión en unirseATorneoPrivado:", error);
-            showMessage('No se pudo conectar con el servidor.', false);
-        }
+/**
+ * Une a un jugador a un torneo privado existente validando la contraseña.
+ * Versión final para usar una vez que el backend obtenga el ID del jugador desde el token.
+ * @param {string} torneoId - El ID del torneo al que se unirá el jugador.
+ * @param {string} password - La contraseña del torneo introducida por el usuario.
+ */
+async function unirseATorneoPrivado(torneoId, password) {
+    const token = localStorage.getItem('jwt_token');
+    if (!token) {
+        showMessage("Debes iniciar sesión para unirte a un torneo.", false);
+        return;
     }
+
+    // El backend ahora identifica al jugador por el token,
+    // así que solo necesitamos enviar la contraseña.
+    const requestBody = {
+        password: password
+    };
+
+    const url = `http://localhost:8080/torneo/${torneoId}/unirse`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            const torneoActualizado = await response.json();
+            showMessage('¡Te has unido al torneo exitosamente!', true);
+            cargarTorneosDisponibles('PRIVADO');
+        } else {
+            const mensajeError = await response.text();
+            showMessage(`Error: ${mensajeError}`, false);
+        }
+    } catch (error) {
+        console.error("Error de conexión en unirseATorneoPrivado:", error);
+        showMessage('No se pudo conectar con el servidor.', false);
+    }
+}
 });

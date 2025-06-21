@@ -38,5 +38,11 @@ body {
 }
 
 #password-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     z-index: 10000; /* Un valor muy alto para garantizar que se apile por encima de todo */
+    display: none; /* Se maneja con JS */
 }
