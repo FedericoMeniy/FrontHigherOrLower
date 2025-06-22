@@ -102,12 +102,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         torneos.forEach(torneo => {
-            // SOLUCIÓN 1: Usamos 'costoEntrada' en lugar de 'costoPuntos'
-            const costoTexto = torneo.tipo === 'ADMIN' ? `Costo: ${torneo.costoPuntos} puntos` : 'Requiere contraseña';
+            // ***** INICIO DE LA MODIFICACIÓN *****
+            // Se genera el texto informativo dependiendo del tipo de torneo.
+            let infoTexto;
+            if (torneo.tipo === 'ADMIN') {
+                // Para torneos oficiales, se muestra el premio y el costo.
+                infoTexto = `Premio: ${torneo.premio} puntos - Costo: ${torneo.costoPuntos} puntos`;
+            } else {
+                // Para torneos de amigos, se indica que se requiere contraseña.
+                infoTexto = 'Requiere contraseña';
+            }
+            // ***** FIN DE LA MODIFICACIÓN *****
+            
             const li = document.createElement('li');
             li.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">
-                    <span><strong>${torneo.nombre}</strong> (${costoTexto})</span>
+                    <span><strong>${torneo.nombre}</strong> (${infoTexto})</span>
                     <button class="btn-unirse-ahora" data-id="${torneo.id}" data-tipo="${torneo.tipo}" data-costo="${torneo.costoPuntos}" data-nombre="${torneo.nombre}">Unirse</button>
                 </div>
             `;
