@@ -266,7 +266,7 @@ async function unirseATorneoPrivado(torneoId, password) {
             cargarTorneosDisponibles(tipoTorneoSeleccionado, searchTorneoInput.value.toLowerCase());
         } else {
             const mensajeError = await response.text();
-            showMessage(`Error: ${mensajeError}`, false);
+            showMessage(`${mensajeError}`, false);
         }
     } catch (error) {
         console.error("Error de conexión en unirseATorneoPrivado:", error);

@@ -1,0 +1,47 @@
+/* Estilos para la lista de torneos en el Perfil */
+.torneo-item {
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.torneo-item:hover {
+    transform: scale(1.03);
+}
+
+.torneo-item.torneo-oficial {
+    background-color: #3498db; /* Azul */
+    color: white;
+}
+
+.torneo-item.torneo-amigos {
+    background-color: #f1c40f; /* Amarillo */
+    color: #333; /* Texto oscuro para que sea legible sobre amarillo */
+}
+
+/* Estilos para la leyenda de colores en el perfil */
+.leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666; /* Color de texto para la leyenda */
+}
+
+.circulo-leyenda {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.circulo-leyenda.circulo-azul {
+    background-color: #3498db; /* Mismo azul que .torneo-oficial */
+}
+
+.circulo-leyenda.circulo-amarillo {
+    background-color: #f1c40f; /* Mismo amarillo que .torneo-amigos */
+}

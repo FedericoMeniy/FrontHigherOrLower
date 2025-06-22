@@ -9,6 +9,7 @@
 @import url('components/forms.css');
 @import url('components/alerts.css');
 @import url('components/player-card.css');
+@import url('components/torneo-list.css');
 
 /* Layout (estructura general de las secciones) */
 @import url('layout/main-layout.css');

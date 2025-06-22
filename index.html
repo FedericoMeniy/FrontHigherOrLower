@@ -79,19 +79,39 @@
 </div>
 
     <div id="perfil-container" class="overlay" style="display: none;">
-        <div class="login-box">
-            <h2>Mi Perfil</h2>
-            <div id="perfil-info" style="text-align: left; margin-bottom: 20px;">
-    <p><strong>Usuario:</strong> <span id="perfil-username"></span></p>
-    <p><strong>Email:</strong> <span id="perfil-email"></span></p>
-    <p><strong>Puntos Totales:</strong> <span id="perfil-puntos">0</span></p>
-    </div>
-            <h3>Mis Torneos Inscriptos</h3>
+    <div class="login-box">
+        <h2>Mi Perfil</h2>
+        <div id="perfil-info" style="text-align: left; margin-bottom: 20px;">
+            <p><strong>Usuario:</strong> <span id="perfil-username"></span></p>
+            <p><strong>Email:</strong> <span id="perfil-email"></span></p>
+            <p><strong>Puntos Totales:</strong> <span id="perfil-puntos">0</span></p>
+        </div>
+
+        <div class="buttons" style="flex-direction: row; gap: 10px; justify-content: center; margin-bottom: 20px;">
+            <button id="ver-inscriptos-btn" class="btn" style="width: auto; padding: 10px 20px;">Torneos Inscriptos</button>
+            <button id="ver-creados-btn" class="btn" style="width: auto; padding: 10px 20px;">Torneos Creados</button>
+        </div>
+
+        <div id="perfil-leyenda" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; font-size: 14px;">
+            <div class="leyenda-item">
+                <span class="circulo-leyenda circulo-azul"></span>
+                <span>Torneos Oficiales</span>
+            </div>
+            <div class="leyenda-item">
+                <span class="circulo-leyenda circulo-amarillo"></span>
+                <span>Torneos de Amigos</span>
+            </div>
+        </div>
+
+        <div id="perfil-torneos-container" style="width: 100%;">
+            <h3 id="perfil-torneos-titulo" style="margin-bottom: 10px; color: #333;"></h3>
             <ul id="perfil-torneos-lista" style="list-style: none; padding: 0;">
                 </ul>
-            <button id="volver-menu-perfil" class="btn-volver">Volver al Menú</button>
         </div>
+
+        <button id="volver-menu-perfil" class="btn-volver">Volver al Menú</button>
     </div>
+</div>
 
     <div id="torneo-selection-container" class="overlay" style="display: none;">
         <div class="login-box">
