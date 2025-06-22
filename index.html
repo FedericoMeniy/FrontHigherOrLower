@@ -78,6 +78,34 @@
     </div>
 </div>
 
+<div id="modificar-torneo-container" class="overlay" style="display: none;">
+    <div class="login-box">
+        <h2>Modificar Torneo Oficial</h2>
+        <form id="form-modificar-torneo">
+            <input type="hidden" id="modificar-torneo-id">
+
+            <input type="text" id="modificar-torneo-nombre" placeholder="Nombre del torneo" required>
+            
+            <label for="modificar-torneo-premio" style="display: block; margin-top: 10px; color: #666;">Premio total:</label>
+            <input type="number" id="modificar-torneo-premio" placeholder="Premio total" required>
+            
+            <label for="modificar-torneo-costo" style="display: block; margin-top: 10px; color: #666;">Costo de entrada:</label>
+            <input type="number" id="modificar-torneo-costo" placeholder="Costo de entrada" required>
+
+            <label for="modificar-torneo-duracion" style="display: block; margin-top: 10px; color: #666;">Duración del torneo:</label>
+            <select id="modificar-torneo-duracion" required>
+                <option value="30m">30 minutos</option>
+                <option value="1h">1 hora</option>
+                <option value="3h">3 horas</option>
+                <option value="24h">24 horas</option>
+            </select>
+
+            <button type="submit" class="btn" style="margin-top: 20px;">Guardar Cambios</button>
+        </form>
+        <button id="cancelar-modificar-torneo" class="btn-volver">Cancelar</button>
+    </div>
+</div>
+
     <div id="perfil-container" class="overlay" style="display: none;">
     <div class="login-box">
         <h2>Mi Perfil</h2>

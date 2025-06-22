@@ -27,7 +27,9 @@ body {
 
 /* Ajustes específicos para formularios dentro de .overlay */
 #login-form.overlay,
-#register-form.overlay {
+#register-form.overlay,
+#crear-torneo-container.overlay,
+#modificar-torneo-container.overlay { 
     position: fixed;
     top: 0;
     left: 0;
@@ -56,3 +58,4 @@ body {
     z-index: 10000; /* Un valor muy alto para garantizar que se apile por encima de todo */
     display: none; /* Se maneja con JS */
 }
+
