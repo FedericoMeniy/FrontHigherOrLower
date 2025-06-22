@@ -125,7 +125,7 @@
     </div>
 
     <div id="unirse-torneo-container" class="overlay" style="display: none;">
-    <div class="login-box">
+    <div class="login-box" id="unirse-torneo-box">
         <h2>Unirse a un Torneo</h2>
 
         <!-- 🔍 Barra de búsqueda por nombre de torneo -->
@@ -147,6 +147,17 @@
             <button type="submit" class="btn">Confirmar</button>
         </form>
         <button id="cancelar-password-modal" class="btn-volver" style="background-color: #e74c3c;">Cancelar</button>
+    </div>
+</div>
+
+<div id="confirm-modal" class="overlay" style="display: none;">
+    <div class="login-box" style="text-align: center;">
+        <h2 id="confirm-modal-title">Confirmar Unión</h2>
+        <p id="confirm-modal-text" style="margin: 20px 0; color: #333; font-size: 18px;"></p>
+        <div class="buttons" style="flex-direction: row; justify-content: center; gap: 15px;">
+            <button id="confirm-modal-accept" class="btn">Aceptar</button>
+            <button id="confirm-modal-cancel" class="btn-volver" style="background-color: #c0392b;">Cancelar</button>
+        </div>
     </div>
 </div>
 

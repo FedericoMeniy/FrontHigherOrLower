@@ -8,6 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const unirseTorneoContainer = document.getElementById('unirse-torneo-container');
     const passwordModal = document.getElementById('password-modal');
 
+    // --- NUEVOS ELEMENTOS PARA EL MODAL DE CONFIRMACIÓN ---
+    const confirmModal = document.getElementById('confirm-modal');
+    const confirmModalText = document.getElementById('confirm-modal-text');
+    const confirmModalAcceptBtn = document.getElementById('confirm-modal-accept');
+    const confirmModalCancelBtn = document.getElementById('confirm-modal-cancel');
+
     // Botones de navegación y acción
     const selectTorneoOficialBtn = document.getElementById('select-torneo-oficial');
     const selectTorneoAmigosBtn = document.getElementById('select-torneo-amigos');
@@ -141,9 +147,22 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             if (torneo.tipo === 'ADMIN') {
-                if (confirm(`¿Quieres gastar ${torneo.costo} puntos para unirte al torneo "${torneo.nombre}"?`)) {
+                // --- REEMPLAZO DE LA LÓGICA confirm() ---
+                // Preparamos y mostramos el modal personalizado
+                confirmModalText.textContent = `¿Quieres gastar ${torneo.costo} puntos para unirte al torneo "${torneo.nombre}"?`;
+                confirmModal.style.display = 'flex';
+
+                // Asignamos la acción al botón "Aceptar"
+                confirmModalAcceptBtn.onclick = () => {
                     unirseATorneoAdmin(torneo.id);
-                }
+                    confirmModal.style.display = 'none'; // Ocultamos el modal
+                };
+
+                // Asignamos la acción al botón "Cancelar"
+                confirmModalCancelBtn.onclick = () => {
+                    confirmModal.style.display = 'none'; // Simplemente ocultamos el modal
+                };
+
             } else if (torneo.tipo === 'PRIVADO') {
                 passwordModalTitle.textContent = `Contraseña para "${torneo.nombre}"`;
                 passwordModal.style.display = 'flex';

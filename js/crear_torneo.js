@@ -99,9 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!response.ok) {
-                // Aquí se recibe el "Usuario creador no encontrado"
                 const errorTexto = await response.text(); 
-                throw new Error('Error del servidor: ' + errorTexto);
+                throw new Error(errorTexto);
             }
 
             const resultado = await response.json();
@@ -111,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
             menuContainer.style.display = 'flex';
 
         } catch (error) {
-            console.error("Error en el fetch:", error);
             showMessage(error.message, false);
         }
     });

@@ -97,3 +97,24 @@ button:hover {
     background-color: #f44336; /* Rojo para el botón de cerrar sesión */
     color: white;
 }
+
+/* Estilos para igualar los botones del modal de confirmación */
+#confirm-modal .buttons .btn,
+#confirm-modal .buttons .btn-volver {
+    /* Reseteamos el margen superior */
+    margin-top: 0;
+
+    /* Igualamos el tamaño de la fuente */
+    font-size: 16px;
+
+    /* ----- CAMBIO PRINCIPAL ----- */
+    /* Usamos la propiedad 'padding' para igualar tanto el relleno
+       vertical (12px) como el horizontal (20px) para ambos botones. */
+    padding: 12px 20px;
+
+    /* La propiedad flex: 1 se asegura de que ambos botones tengan el mismo ancho */
+    flex: 1;
+
+    /* Un ancho máximo para que no se estiren demasiado */
+    max-width: 200px;
+}

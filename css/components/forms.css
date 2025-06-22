@@ -20,3 +20,11 @@
     font-size: 16px;
     box-sizing: border-box; /* Asegurar que padding no aumente el ancho */
 }
+
+/* En css/components/forms.css */
+
+/* Estilo para hacer más ancha la caja de "Unirse a Torneo" */
+#unirse-torneo-box {
+    max-width: 900px; /* Aumentamos el ancho máximo */
+    width: 90%; /* Mantenemos la responsividad en pantallas pequeñas */
+}
