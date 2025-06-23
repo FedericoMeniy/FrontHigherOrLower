@@ -37,13 +37,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const adminEliminarBtn = document.getElementById('admin-eliminar-btn');
     const volverPerfilAdminOptionsBtn = document.getElementById('volver-perfil-admin-options');
 
-    // --- Elementos para la Vista de la Tabla ---
+    // --- Vista de la Tabla ---
     const torneoTablaContainer = document.getElementById('torneo-tabla-container');
     const tablaTorneoTitle = document.getElementById('tabla-torneo-title');
     const tablaTorneoContent = document.getElementById('tabla-torneo-content');
-    const volverAdminOptionsTablaBtn = document.getElementById('volver-admin-options-tabla');
+    const volverDesdeTablaBtn = document.getElementById('volver-desde-tabla-btn');
+
+    // --- Opciones del Jugador ---
+    const jugadorTorneoOptionsContainer = document.getElementById('jugador-torneo-options-container');
+    const jugadorOptionsTitle = document.getElementById('jugador-options-title');
+    const jugadorJugarBtn = document.getElementById('jugador-jugar-btn');
+    const jugadorVerTablaBtn = document.getElementById('jugador-ver-tabla-btn');
+    const volverPerfilJugadorOptionsBtn = document.getElementById('volver-perfil-jugador-options');
 
     let torneoSeleccionado = null; 
+    let pantallaAnterior = ''; // Para saber a dónde volver desde la tabla
 
     // Evento para mostrar la pantalla de perfil
     perfilBtn.addEventListener('click', () => {
@@ -94,12 +102,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Manejo de clics en la lista de torneos
     torneosLista.addEventListener('click', (e) => {
-        const target = e.target.closest('.torneo-item'); 
-        if (target && target.classList.contains('admin-actions-available')) {
+        const target = e.target.closest('.torneo-item');
+        if (!target) return;
+
+        if (target.classList.contains('admin-actions-available')) {
             torneoSeleccionado = JSON.parse(target.dataset.torneo);
+            pantallaAnterior = 'admin-options';
             perfilContainer.style.display = 'none';
             adminOptionsTitle.textContent = `Gestionar "${torneoSeleccionado.nombre}"`;
             torneoAdminOptionsContainer.style.display = 'flex';
+        }
+        else if (target.classList.contains('jugador-actions-available')) {
+            torneoSeleccionado = JSON.parse(target.dataset.torneo);
+            pantallaAnterior = 'jugador-options';
+            perfilContainer.style.display = 'none';
+            jugadorOptionsTitle.textContent = `Torneo: "${torneoSeleccionado.nombre}"`;
+            jugadorTorneoOptionsContainer.style.display = 'flex';
         }
     });
 
@@ -146,69 +164,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Lógica para la vista de la tabla ---
 
-    volverAdminOptionsTablaBtn.addEventListener('click', () => {
+    volverDesdeTablaBtn.addEventListener('click', () => {
         torneoTablaContainer.style.display = 'none';
-        torneoAdminOptionsContainer.style.display = 'flex';
+        if (pantallaAnterior === 'admin-options') {
+            torneoAdminOptionsContainer.style.display = 'flex';
+        } else if (pantallaAnterior === 'jugador-options') {
+            jugadorTorneoOptionsContainer.style.display = 'flex';
+        } else {
+            perfilContainer.style.display = 'flex';
+        }
+    });
+    
+    // --- Lógica para la pantalla de opciones del jugador ---
+    
+    jugadorJugarBtn.addEventListener('click', () => {
+        if (!torneoSeleccionado) return;
+        // Ocultamos la vista de perfil
+        perfilContainer.style.display = 'none';
+        jugadorTorneoOptionsContainer.style.display = 'none';
+
+        // Llamamos a la nueva función en juego.js para iniciar en modo torneo
+        iniciarJuegoTorneo(torneoSeleccionado);
+    });
+    
+    jugadorVerTablaBtn.addEventListener('click', () => {
+        if (!torneoSeleccionado) return;
+        jugadorTorneoOptionsContainer.style.display = 'none';
+        torneoTablaContainer.style.display = 'flex';
+        tablaTorneoTitle.textContent = `Tabla de Posiciones: "${torneoSeleccionado.nombre}"`;
+        cargarTablaTorneo(torneoSeleccionado.id);
     });
 
-    async function cargarTablaTorneo(torneoId) {
-        tablaTorneoContent.innerHTML = '<p>Cargando tabla...</p>';
-        const token = localStorage.getItem('jwt_token');
+    volverPerfilJugadorOptionsBtn.addEventListener('click', () => {
+        jugadorTorneoOptionsContainer.style.display = 'none';
+        perfilContainer.style.display = 'flex';
+        torneoSeleccionado = null;
+    });
 
-        // ========= CORRECCIÓN 1: URL del endpoint corregida a /leaderboard =========
-        const url = `http://localhost:8080/torneo/${torneoId}/leaderboard`;
-
-        try {
-            const response = await fetch(url, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (!response.ok) {
-                const errorTexto = await response.text();
-                throw new Error(errorTexto || 'No se pudo cargar la tabla del torneo.');
-            }
-            const datosTabla = await response.json();
-            renderizarTabla(datosTabla);
-        } catch (error) {
-            tablaTorneoContent.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
-        }
-    }
-
-    function renderizarTabla(datos) {
-        if (!datos || datos.length === 0) {
-            tablaTorneoContent.innerHTML = '<p>Aún no hay participantes o puntajes en este torneo.</p>';
-            return;
-        }
-
-        let tablaHTML = `
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr style="background-color: #f2f2f2;">
-                        <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Posición</th>
-                        <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Usuario</th>
-                        <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Puntaje</th>
-                        <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Partidas Jugadas</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        // ========= CORRECCIÓN 2: Se usan los nombres de propiedad correctos y se calcula la posición =========
-        datos.forEach((item, index) => {
-            tablaHTML += `
-                <tr>
-                    <td style="padding: 8px; border: 1px solid #ddd;">${index + 1}</td>
-                    <td style="padding: 8px; border: 1px solid #ddd;">${item.jugador.nombreUsuario}</td>
-                    <td style="padding: 8px; border: 1px solid #ddd;">${item.puntaje}</td>
-                    <td style="padding: 8px; border: 1px solid #ddd;">${item.partidasJugadas}</td>
-                </tr>
-            `;
-        });
-
-        tablaHTML += '</tbody></table>';
-        tablaTorneoContent.innerHTML = tablaHTML;
-    }
-
-    // --- Funciones de Carga de Datos y API (sin cambios) ---
+    // --- Funciones de Carga y Renderizado ---
 
     async function cargarDatosBasicosPerfil() {
         const token = localStorage.getItem('jwt_token');
@@ -251,6 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderizarTorneos(torneos, titulo) {
         limpiarVistaTorneos();
         torneosTitulo.textContent = titulo;
+
         if (!torneos || torneos.length === 0) {
             const mensaje = titulo.includes('Inscriptos') 
                 ? 'No estás inscripto en ningún torneo.' 
@@ -258,21 +252,86 @@ document.addEventListener('DOMContentLoaded', () => {
             torneosLista.innerHTML = `<li>${mensaje}</li>`;
             return;
         }
+
         const esAdmin = localStorage.getItem('userRole') === 'ADMIN';
         const esVistaCreados = titulo.includes('Creados');
+        const esVistaInscriptos = titulo.includes('Inscriptos');
+
         torneos.forEach(torneo => {
             const li = document.createElement('li');
             const claseTipo = torneo.tipo === 'ADMIN' ? 'torneo-oficial' : 'torneo-amigos';
             li.className = `torneo-item ${claseTipo}`;
+            
             if (esAdmin && esVistaCreados && torneo.tipo === 'ADMIN') {
                 li.classList.add('admin-actions-available');
                 li.dataset.torneo = JSON.stringify(torneo);
             }
+            else if (!esAdmin && esVistaInscriptos) {
+                li.classList.add('jugador-actions-available');
+                li.dataset.torneo = JSON.stringify(torneo);
+            }
+
             li.textContent = torneo.nombre;
             torneosLista.appendChild(li);
         });
     }
 
+    async function cargarTablaTorneo(torneoId) {
+        tablaTorneoContent.innerHTML = '<p>Cargando tabla...</p>';
+        const token = localStorage.getItem('jwt_token');
+        const url = `http://localhost:8080/torneo/${torneoId}/leaderboard`;
+
+        try {
+            const response = await fetch(url, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!response.ok) {
+                const errorTexto = await response.text();
+                throw new Error(errorTexto || 'No se pudo cargar la tabla del torneo.');
+            }
+            const datosTabla = await response.json();
+            renderizarTablaPosiciones(datosTabla); // Renombrada para evitar conflicto
+        } catch (error) {
+            tablaTorneoContent.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+        }
+    }
+
+    function renderizarTablaPosiciones(datos) { // Renombrada para evitar conflicto
+        if (!datos || datos.length === 0) {
+            tablaTorneoContent.innerHTML = '<p>Aún no hay participantes o puntajes en este torneo.</p>';
+            return;
+        }
+
+        let tablaHTML = `
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background-color: #f2f2f2;">
+                        <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Posición</th>
+                        <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Usuario</th>
+                        <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Puntaje</th>
+                        <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Partidas Jugadas</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        datos.forEach((item, index) => {
+            tablaHTML += `
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${index + 1}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${item.jugador.nombreUsuario}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${item.puntaje}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${item.partidasJugadas}</td>
+                </tr>
+            `;
+        });
+
+        tablaHTML += '</tbody></table>';
+        tablaTorneoContent.innerHTML = tablaHTML;
+    }
+
+
+    // --- Funciones de API ---
     async function actualizarTorneo(torneoId, datos) {
         const token = localStorage.getItem('jwt_token');
         try {
