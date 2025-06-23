@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         jugadorTorneoOptionsContainer.style.display = 'none';
 
         // Llamamos a la nueva función en juego.js para iniciar en modo torneo
-        iniciarJuegoTorneo(torneoSeleccionado);
+    iniciarJuegoTorneo(torneoSeleccionado);
     });
     
     jugadorVerTablaBtn.addEventListener('click', () => {

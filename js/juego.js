@@ -12,6 +12,25 @@ let modoDeJuego = {
     torneo: null      // almacenará el objeto del torneo si es modo torneo
 };
 
+
+// ========================================================================
+// NUEVA FUNCIÓN AUXILIAR PARA DECODIFICAR EL TOKEN
+// ========================================================================
+/**
+ * Decodifica un token JWT para extraer su contenido (payload).
+ * @param {string} token El token JWT.
+ * @returns {object|null} El payload del token o null si es inválido.
+ */
+function parseJwt(token) {
+    try {
+        return JSON.parse(atob(token.split('.')[1]));
+    } catch (e) {
+        console.error("Error al decodificar el token:", e);
+        return null;
+    }
+}
+
+
 /**
  * Inicia el juego en MODO CLÁSICO.
  */
@@ -32,11 +51,16 @@ function iniciarJuegoClasico() {
 function iniciarJuegoTorneo(torneo) {
     modoDeJuego = { tipo: 'torneo', torneo: torneo };
     
+    // Oculta todas las demás vistas para asegurarse de que solo se vea el juego
+    document.getElementById('perfil-container').style.display = 'none';
+    document.getElementById('jugador-torneo-options-container').style.display = 'none';
+
     juegoContainer.style.display = 'block';
     puntaje = 0;
 
     cargarNuevaRonda();
 }
+
 
 /**
  * Carga una nueva ronda dependiendo del modo de juego.
@@ -45,7 +69,6 @@ async function cargarNuevaRonda() {
     let url = '';
     
     if (modoDeJuego.tipo === 'torneo') {
-        // ========= CORRECCIÓN 1: Usando el nuevo endpoint del JuegoController =========
         url = `http://localhost:8080/juego/${modoDeJuego.torneo.id}/nueva-ronda`;
     } else {
         url = 'http://localhost:8080/juego/ronda';
@@ -143,6 +166,10 @@ function jugar(eleccion) {
     }
 }
 
+
+// ========================================================================
+// VERSIÓN CORREGIDA DE LA FUNCIÓN
+// ========================================================================
 /**
  * Al finalizar una partida, decide a qué endpoint guardar el puntaje.
  */
@@ -158,52 +185,68 @@ async function finalizarPartida() {
     let requestBody = {};
     
     if (modoDeJuego.tipo === 'torneo') {
-        // ========= CORRECCIÓN 2: Usando el nuevo endpoint y el cuerpo de la petición correcto =========
+        // Obtenemos el ID del jugador desde el token
+        const userData = parseJwt(token);
+        if (!userData || !userData.userId) { // Asumo que el ID está como 'userId'
+            showMessage("Error: No se pudo obtener la información del jugador desde el token.", false);
+            mostrarPantallaDeDerrota();
+            return;
+        }
+
+        if (!modoDeJuego.torneo || !modoDeJuego.torneo.id) {
+            console.error("Error crítico: Se intentó finalizar una partida de torneo sin un ID de torneo válido.", modoDeJuego.torneo);
+            showMessage("Error: No se pudo identificar el torneo para guardar la partida.", false);
+            mostrarPantallaDeDerrota();
+            return; 
+        }
+        
         url = `http://localhost:8080/juego/registrar-partida-torneo`;
-        // El DTO en el backend necesita saber a qué torneo pertenece el puntaje.
+        
+        // CORRECCIÓN: Se construye el cuerpo con los nombres de campo correctos
         requestBody = {
-            torneoId: modoDeJuego.torneo.id,
-            puntos: puntaje
+            idTorneo: modoDeJuego.torneo.id,
+            idJugador: userData.userId,
+            puntosObtenidos: puntaje
         };
+
     } else {
         url = `http://localhost:8080/juego/guardar-puntaje`;
         requestBody = { puntos: puntaje };
     }
 
-    // Solo intentamos guardar si se hicieron puntos
-    if (puntaje > 0) {
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(requestBody)
-            });
+    // Se intenta guardar incluso si el puntaje es 0 (para registrar la partida jugada)
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(requestBody)
+        });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al guardar el puntaje');
-            }
-            console.log(`Puntaje de ${puntaje} guardado en modo ${modoDeJuego.tipo}.`);
-        } catch (error) {
-            console.error(`Error en finalizarPartida (${modoDeJuego.tipo}):`, error);
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || 'Error al guardar el puntaje');
         }
+        console.log(`Partida guardada en modo ${modoDeJuego.tipo}.`);
+    } catch (error) {
+        showMessage(`Error al guardar la partida: ${error.message}`, false);
+        console.error(`Error en finalizarPartida (${modoDeJuego.tipo}):`, error);
     }
     
     // Siempre mostramos la pantalla de derrota al final
     mostrarPantallaDeDerrota();
 }
 
+
 /**
- * MODIFICADO: Muestra la pantalla de derrota con botones diferentes según el modo de juego.
+ * Muestra la pantalla de derrota con botones diferentes según el modo de juego.
  */
 function mostrarPantallaDeDerrota() {
     let botonesHTML = '';
 
     if (modoDeJuego.tipo === 'torneo') {
-        // ========= CORRECCIÓN 3: Botones personalizados para el modo torneo =========
         botonesHTML = `
             <button onclick="volverAlPerfil()" class="btn">Volver a Mi Perfil</button>
         `;
@@ -228,7 +271,7 @@ function mostrarPantallaDeDerrota() {
 }
 
 /**
- * Vuelve al menú principal (usado por el modo clásico y el botón de salir).
+ * Vuelve al menú principal.
  */
 function volverAlMenu() {
     menuContainer.style.display = 'flex';
@@ -236,18 +279,18 @@ function volverAlMenu() {
 }
 
 /**
- * NUEVA FUNCIÓN: Vuelve a la pantalla de perfil (usado por el modo torneo).
+ * Vuelve a la pantalla de perfil.
  */
 function volverAlPerfil() {
     const perfilContainer = document.getElementById('perfil-container');
     if (perfilContainer) {
         juegoContainer.style.display = 'none';
         perfilContainer.style.display = 'flex';
-        // Disparamos un clic en el botón de torneos inscritos para refrescar la vista.
-        // Esto es opcional, pero mejora la experiencia del usuario.
+        // Disparamos un clic en el botón de torneos inscritos para refrescar la lista.
+        // Esto mejora la experiencia del usuario.
         document.getElementById('ver-inscriptos-btn').click();
     } else {
-        volverAlMenu(); // Si no encuentra el perfil, vuelve al menú principal.
+        volverAlMenu();
     }
 }
 
