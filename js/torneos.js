@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- NUEVOS ELEMENTOS PARA EL MODAL DE CONFIRMACIÓN ---
     const confirmModal = document.getElementById('confirm-modal');
+    // ========= CAMBIO: Añadir referencia al título del modal =========
+    const confirmModalTitle = document.getElementById('confirm-modal-title');
     const confirmModalText = document.getElementById('confirm-modal-text');
     const confirmModalAcceptBtn = document.getElementById('confirm-modal-accept');
     const confirmModalCancelBtn = document.getElementById('confirm-modal-cancel');
@@ -108,17 +110,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         torneos.forEach(torneo => {
-            // ***** INICIO DE LA MODIFICACIÓN *****
-            // Se genera el texto informativo dependiendo del tipo de torneo.
             let infoTexto;
             if (torneo.tipo === 'ADMIN') {
-                // Para torneos oficiales, se muestra el premio y el costo.
                 infoTexto = `Premio: ${torneo.premio} puntos - Costo: ${torneo.costoPuntos} puntos`;
             } else {
-                // Para torneos de amigos, se indica que se requiere contraseña.
                 infoTexto = 'Requiere contraseña';
             }
-            // ***** FIN DE LA MODIFICACIÓN *****
             
             const li = document.createElement('li');
             li.innerHTML = `
@@ -147,20 +144,18 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             if (torneo.tipo === 'ADMIN') {
-                // --- REEMPLAZO DE LA LÓGICA confirm() ---
-                // Preparamos y mostramos el modal personalizado
+                // ========= CAMBIO: Establecer el título del modal =========
+                confirmModalTitle.textContent = 'Confirmar Unión';
                 confirmModalText.textContent = `¿Quieres gastar ${torneo.costo} puntos para unirte al torneo "${torneo.nombre}"?`;
                 confirmModal.style.display = 'flex';
 
-                // Asignamos la acción al botón "Aceptar"
                 confirmModalAcceptBtn.onclick = () => {
                     unirseATorneoAdmin(torneo.id);
-                    confirmModal.style.display = 'none'; // Ocultamos el modal
+                    confirmModal.style.display = 'none';
                 };
 
-                // Asignamos la acción al botón "Cancelar"
                 confirmModalCancelBtn.onclick = () => {
-                    confirmModal.style.display = 'none'; // Simplemente ocultamos el modal
+                    confirmModal.style.display = 'none';
                 };
 
             } else if (torneo.tipo === 'PRIVADO') {
@@ -192,15 +187,13 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const torneoId = e.target.dataset.torneoId;
         const password = document.getElementById('torneo-password-input').value;
-        // Se llama a la función actualizada para unirse a torneos privados
         unirseATorneoPrivado(torneoId, password);
         passwordForm.reset();
         passwordModal.style.display = 'none';
     });
     
-    // --- Funciones fetch para unirse (ACTUALIZADAS) ---
+    // --- Funciones fetch para unirse ---
 
-    // Función para unirse a torneos de Admin, AHORA CON AUTENTICACIÓN
     async function unirseATorneoAdmin(torneoId) {
     const token = localStorage.getItem('jwt_token');
     if (!token) {
@@ -218,16 +211,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (!response.ok) {
-            // SOLUCIÓN 2: Leemos la respuesta UNA SOLA VEZ como texto.
             const errorText = await response.text();
             let errorMessage = errorText;
 
-            // Intentamos convertir el texto a JSON para ver si tiene un mensaje más específico.
             try {
                 const errorJson = JSON.parse(errorText);
                 errorMessage = errorJson.mensaje || errorText;
             } catch (e) {
-                // Si no es JSON, no hacemos nada y usamos el texto plano como error.
+                // No es JSON, usar texto plano.
             }
             throw new Error(errorMessage);
         }
@@ -239,20 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showMessage(error.message, false); 
     }
 }
-    /**
-     * Une a un jugador a un torneo privado existente validando la contraseña.
-     * Esta función ha sido actualizada para cumplir con los nuevos requisitos de la API.
-     * @param {string} torneoId - El ID del torneo al que se unirá el jugador.
-     * @param {string} password - La contraseña del torneo introducida por el usuario.
-     */
-   // js/torneos.js
 
-/**
- * Une a un jugador a un torneo privado existente validando la contraseña.
- * Versión final para usar una vez que el backend obtenga el ID del jugador desde el token.
- * @param {string} torneoId - El ID del torneo al que se unirá el jugador.
- * @param {string} password - La contraseña del torneo introducida por el usuario.
- */
 async function unirseATorneoPrivado(torneoId, password) {
     const token = localStorage.getItem('jwt_token');
     if (!token) {
@@ -260,8 +238,6 @@ async function unirseATorneoPrivado(torneoId, password) {
         return;
     }
 
-    // El backend ahora identifica al jugador por el token,
-    // así que solo necesitamos enviar la contraseña.
     const requestBody = {
         password: password
     };
@@ -281,7 +257,6 @@ async function unirseATorneoPrivado(torneoId, password) {
         if (response.ok) {
             const torneoActualizado = await response.json();
             showMessage('¡Te has unido al torneo exitosamente!', true);
-            // Recargar torneos del tipo actual para reflejar el cambio
             cargarTorneosDisponibles(tipoTorneoSeleccionado, searchTorneoInput.value.toLowerCase());
         } else {
             const mensajeError = await response.text();
