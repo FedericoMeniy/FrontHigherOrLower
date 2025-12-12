@@ -1,12 +1,18 @@
-/* Tarjeta de Jugador en el Juego */
+/* Player Card - Clean Matte */
 .jugador {
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 2rem;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    width: 250px;
-    color: #333; /* Color de texto para la tarjeta del jugador */
+    box-shadow: var(--shadow-soft);
+    width: 280px;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s;
+}
+
+.jugador:hover {
+    transform: translateY(-5px);
 }
 
 .jugador img {
@@ -14,5 +20,21 @@
     height: 150px;
     object-fit: cover;
     border-radius: 50%;
-    border: 3px solid #2c3e50;
+    border: 4px solid var(--border-color);
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.jugador h3 {
+    font-size: 1.5rem;
+    margin: 0.5rem 0;
+    color: var(--text-primary);
+}
+
+/* Stats or Score */
+.jugador-stats {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary);
+    font-family: var(--font-heading);
 }

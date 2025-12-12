@@ -1,16 +1,25 @@
-/* Importaciones de Estilos Modulares */
+/* Main Styles Import */
 
-/* Base (estilos fundamentales y de reseteo) */
+/* Base */
 @import url('base/reset.css');
 @import url('base/typography.css');
 
-/* Componentes (elementos reutilizables) */
+/* Components */
 @import url('components/buttons.css');
 @import url('components/forms.css');
 @import url('components/alerts.css');
 @import url('components/player-card.css');
 @import url('components/torneo-list.css');
 
-/* Layout (estructura general de las secciones) */
+/* Layout */
 @import url('layout/main-layout.css');
 @import url('layout/game-layout.css');
+
+/* Global Background Override to ensure path correctness */
+body {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../img/background.jpg') !important;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}

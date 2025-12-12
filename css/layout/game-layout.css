@@ -1,37 +1,68 @@
-/* Estilos para el Layout del Juego */
+/* Game Layout - Clean Matte */
 #juego-container {
-    display: none; /* Manejado por JS */
+    display: none;
 }
 
 .game-overlay {
-    background-color: rgba(0, 0, 0, 0.85); /* Fondo oscuro para el juego */
+    background-color: var(--bg-main);
     height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 2rem;
+    box-sizing: border-box;
 }
 
 .jugadores-comparacion {
     display: flex;
-    justify-content: space-around;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    color: #333; /* Asegurar que el texto de los jugadores sea legible */
+    justify-content: center;
+    align-items: stretch;
+    /* Match height */
+    gap: 2rem;
+    width: 100%;
+    max-width: 1000px;
+    margin-bottom: 2rem;
 }
 
 .opciones {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+    gap: 1.5rem;
+    min-width: 250px;
+    /* Fixed width for center column */
 }
 
+/* Question Text Styles */
 .pregunta-texto {
-    color: #ffc107; /* Amarillo, por ejemplo. Puedes usar el código del color que prefieras */
-    font-weight: bold;
-    font-size: 1.1em; /* Un poco más grande */
-    margin-top: 15px;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1.3rem;
+    text-align: center;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Score styling */
+.puntaje {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.puntaje strong {
+    color: var(--primary);
+    font-size: 2.5rem;
+}
+
+/* Stats in Player Card */
+.estadistica-pregunta {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
 }

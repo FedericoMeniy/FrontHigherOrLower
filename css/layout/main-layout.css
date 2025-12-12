@@ -1,61 +1,67 @@
-/* Estilos para el Layout Principal (Menú, Login, Registro) */
+/* Main Layout - Solid & Clean */
+
 body {
-    background: url('https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a') no-repeat center center fixed;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-main);
+    /* Add Background Image */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../../img/background.jpg');
     background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
 
 .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-    /* Oscurecer el fondo para que el texto resalte, pero solo para los overlays de formularios */
-    background-color: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.5);
+    /* Simple dimming */
+    z-index: 10;
 }
 
-#menu-container.overlay {
-    background-color: rgba(0, 0, 0, 0.5); /* Menos oscuro para el menú principal */
-}
-
-.container {
+.container,
+.login-box {
+    background-color: var(--bg-card);
+    width: 90%;
+    max-width: 1000px;
+    /* INCREASED from 450px to use available space */
+    padding: 3.5rem;
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(0, 0, 0, 0.2);
     text-align: center;
-    padding: 40px;
-    max-width: 600px;
-    width: 100%; /* Para que el max-width funcione bien en móviles */
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    /* Added flex to center content nicely if needed */
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Ajustes específicos para formularios dentro de .overlay */
-#login-form.overlay,
-#register-form.overlay,
-#crear-torneo-container.overlay,
-#modificar-torneo-container.overlay { 
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 9999;
-    display: none; /* Se maneja con JS */
+/* Ensure content inside doesn't stretch weirdly if it's small text */
+.container>*:not(.buttons),
+.login-box>*:not(.buttons) {
+    max-width: 800px;
+    width: 100%;
 }
 
-#password-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 10000; /* Un valor muy alto para garantizar que se apile por encima de todo */
-    display: none; /* Se maneja con JS */
+.buttons {
+    width: 100%;
+    max-width: 400px;
+    /* Keep buttons from getting too wide */
 }
 
-#confirm-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 10000; /* Un valor muy alto para garantizar que se apile por encima de todo */
-    display: none; /* Se maneja con JS */
-}
-
+/* Remove zoom animations for simplicity/swiftness */

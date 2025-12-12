@@ -1,30 +1,69 @@
-/* Estilos de Formularios (Login y Registro) */
-.login-box {
-    background-color: white;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
-    text-align: center;
+/* Forms - Clean & Functional */
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     width: 100%;
-    max-width: 400px;
-    color: #333; /* Color de texto para los formularios */
 }
 
-.login-box input,
-.login-box select {
+input,
+select {
     width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    box-sizing: border-box; /* Asegurar que padding no aumente el ancho */
+    padding: 0.8rem;
+    background-color: #ffffff;
+    /* Always white input */
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: #333;
+    /* Always dark text inside input */
+    font-family: var(--font-body);
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
 }
 
-/* En css/components/forms.css */
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.2);
+    /* Highlight ring */
+}
 
-/* Estilo para hacer más ancha la caja de "Unirse a Torneo" */
-#unirse-torneo-box {
-    max-width: 900px; /* Aumentamos el ancho máximo */
-    width: 90%; /* Mantenemos la responsividad en pantallas pequeñas */
+input::placeholder {
+    color: #aaa;
+}
+
+label {
+    display: block;
+    text-align: left;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.login-box h2 {
+    color: var(--text-primary);
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
+
+p a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+p a:hover {
+    text-decoration: underline;
 }

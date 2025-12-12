@@ -1,59 +1,71 @@
-/* Tipografía y Colores Globales */
-body {
-    font-family: 'Roboto', sans-serif;
-    color: white; /* Color de texto por defecto para el menú principal */
+/* Typography & Variables - Clean Matte Theme */
+:root {
+    /* Color Palette - "Professional Sports App" */
+
+    /* Backgrounds */
+    --bg-main: #f0f2f5;
+    /* Light grey, typical web app background */
+    --bg-card: #ffffff;
+
+    /* Brand Colors */
+    --primary: #007bff;
+    /* Standard pleasant blue */
+    --primary-hover: #0056b3;
+    --accent: #2ecc71;
+    /* Action green */
+
+    /* Text */
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --text-inverted: #ffffff;
+
+    /* Borders & Separators */
+    --border-color: #e1e4e8;
+    --shadow-soft: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    /* Fonts */
+    --font-heading: 'Bebas Neue', sans-serif;
+    --font-body: 'Roboto', sans-serif;
 }
 
+
+
+body {
+    font-family: var(--font-body);
+    font-weight: 400;
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-family: var(--font-heading);
+    letter-spacing: 1px;
+    margin: 0 0 1rem 0;
+    text-transform: uppercase;
+}
+
+/* Common Text Utilities */
 .title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 64px;
-    line-height: 1.1;
-    letter-spacing: 2px;
-    margin-bottom: 20px;
+    font-size: 4rem;
+    line-height: 0.9;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    color: var(--text-primary);
 }
 
 .highlight-green {
-    color: #00e676;
-}
-
-.highlight-red {
-    color: #ff5252;
+    color: var(--primary);
 }
 
 .highlight-white {
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
-.subtitle {
-    font-size: 24px;
-    margin-bottom: 40px;
+.highlight-red {
+    color: var(--danger);
 }
 
-.puntaje {
-    font-size: 18px;
-    font-weight: bold;
-    color: #ffffff; /* Para el juego, donde el fondo es blanco */
-}
-
-/* Títulos de formularios */
-.login-box h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    margin-bottom: 20px;
-    color: #1e88e5;
-}
-
-/* Texto informativo y links de formularios */
-.login-box p {
-    margin-top: 15px;
-    color: #666;
-}
-
-.login-box a {
-    color: #1e88e5;
-    text-decoration: none;
-}
-
-.login-box a:hover {
-    text-decoration: underline;
-}
+/* No text-shadows needed for this clean look */

@@ -1,120 +1,139 @@
-/* Botones Generales */
+/* Buttons - Clean Flat Style */
+
 .buttons {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 1rem;
     align-items: center;
+    width: 100%;
 }
 
 .btn {
-    background-color: #1e88e5;
-    color: white;
-    text-decoration: none;
-    padding: 15px 40px;
-    border-radius: 30px;
-    font-size: 20px;
-    transition: 0.3s ease;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    width: 320px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: var(--font-body);
     text-align: center;
-    white-space: nowrap;
-    border: none; /* Asegurar que no tengan borde por defecto */
+    text-decoration: none;
+    color: var(--text-inverted);
+    background-color: var(--primary);
+    border: none;
+    border-radius: 6px;
+    /* Subtle radius */
     cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.1);
+    /* Tiny tactile depth */
 }
 
 .btn:hover {
-    transform: scale(1.05);
-    background: linear-gradient(135deg, #1565c0, #1e88e5);
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
 }
 
-/* Botones específicos del juego */
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    transition: all 0.3s;
+.btn:active {
+    transform: translateY(1px);
+    box-shadow: none;
 }
 
-.btn-mayor {
-    background-color: #2ecc71;
-    color: white;
+/* Secondary Button (Outlined) */
+.btn-secondary {
+    background-color: transparent;
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+    box-shadow: none;
 }
 
-.btn-menor {
-    background-color: #e74c3c;
-    color: white;
-}
-.btn-igual {
-    background-color: #3498db; /* Un color azul o el que prefieras */
-    color: white;
-}
-button:hover {
-    transform: scale(1.05);
+.btn-secondary:hover {
+    background-color: #f1f2f6;
+    border-color: #bdc3c7;
 }
 
-/* Botón "Volver al menú" */
+/* Base Back Button */
 .btn-volver {
-    margin-top: 30px;
-    padding: 12px 25px;
-    background-color: #9b59b6;
-    color: white;
-    border: none;
-    border-radius: 5px;
+    display: inline-block;
+    margin-top: 1.5rem;
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.9rem;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: 0.2s;
 }
 
 .btn-volver:hover {
-    background-color: #8e44ad;
-    transform: scale(1.03);
+    background: #f8f9fa;
+    color: var(--text-primary);
 }
 
-/* Botones del login/registro */
-.login-box button[type="submit"],
-.login-box .btn {
-    background-color: #1e88e5;
+/* Game Buttons */
+.btn-mayor {
+    background-color: #27ae60;
+    /* Green */
+}
+
+.btn-mayor:hover {
+    background-color: #219150;
+}
+
+.btn-igual {
+    background-color: #7f8c8d;
+    /* Grey */
+}
+
+.btn-igual:hover {
+    background-color: #95a5a6;
+}
+
+.btn-menor {
+    background-color: #c0392b;
+    /* Red */
+}
+
+.btn-menor:hover {
+    background-color: #a93226;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Danger / Action Buttons */
+#cerrar-sesion-btn,
+#admin-eliminar-btn,
+#cancelar-password-modal,
+#confirm-modal-cancel {
+    background-color: var(--danger);
+}
+
+#cerrar-sesion-btn:hover,
+#admin-eliminar-btn:hover,
+#cancelar-password-modal:hover,
+#confirm-modal-cancel:hover {
+    background-color: #a93226;
+    /* Darker red */
+}
+
+/* Small override for list buttons */
+.btn-unirse-ahora {
+    background-color: var(--accent);
     color: white;
-    padding: 14px;
+    padding: 5px 10px;
+    border-radius: 4px;
     border: none;
-    border-radius: 8px;
-    width: 100%;
-    font-size: 18px;
-    margin-top: 10px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-family: var(--font-body);
 }
 
-.login-box button[type="submit"]:hover,
-.login-box .btn:hover {
-    background-color: #1565c0;
-    transform: scale(1.03);
-}
-
-/* Botón de cerrar sesión */
-#cerrar-sesion-btn {
-    background-color: #f44336; /* Rojo para el botón de cerrar sesión */
-    color: white;
-}
-
-/* Estilos para igualar los botones del modal de confirmación */
-#confirm-modal .buttons .btn,
-#confirm-modal .buttons .btn-volver {
-    /* Reseteamos el margen superior */
-    margin-top: 0;
-
-    /* Igualamos el tamaño de la fuente */
-    font-size: 16px;
-
-    /* ----- CAMBIO PRINCIPAL ----- */
-    /* Usamos la propiedad 'padding' para igualar tanto el relleno
-       vertical (12px) como el horizontal (20px) para ambos botones. */
-    padding: 12px 20px;
-
-    /* La propiedad flex: 1 se asegura de que ambos botones tengan el mismo ancho */
-    flex: 1;
-
-    /* Un ancho máximo para que no se estiren demasiado */
-    max-width: 200px;
+.btn-unirse-ahora:hover {
+    background-color: #2ecc71;
 }
